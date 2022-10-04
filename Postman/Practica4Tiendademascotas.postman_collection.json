@@ -1,0 +1,843 @@
+{
+	"info": {
+		"_postman_id": "9d71d9fb-a7ad-4350-ad99-027ccf530a43",
+		"name": "Practica 4 - Tienda de mascotas",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "23313222"
+	},
+	"item": [
+		{
+			"name": "post /addNewPet 201",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"//prueba para validar el codigo de respuesta diferentes maneras hacen lo mismo",
+							"",
+							"console.log(\"Jason response: \", pm.response.json)",
+							"console.log(\"Nombre response: \", pm.response.json().name)",
+							"",
+							"pm.test(\"validar que el nombre de la mascota sea igual a variable dinamica\", function(){",
+							"    var nombre = pm.environment.get(\"name\")",
+							"    pm.expect(pm.response.json().name).to.eql(nombre)",
+							"});",
+							"",
+							"",
+							"pm.test(\"validar que el status sea igual que la variable dinamica\", function(){",
+							"    var status = pm.environment.get(\"status\")",
+							"    pm.expect(pm.response.json().status).to.eql(status)",
+							"});",
+							"",
+							"",
+							"pm.test(\"validar que el codigo de respuesta es 200\", function(){",
+							"    pm.expect(pm.response.code).to.eql(200)",
+							"});",
+							"",
+							"pm.test(\"Status code created\", () => {",
+							"    pm.response.to.have.status(\"OK\")",
+							"});",
+							"",
+							"pm.test(\"Validar el nombre de algunos campos\", () => {",
+							"    pm.expect(pm.response.text()).to.include(\"id\")",
+							"    pm.expect(pm.response.text()).to.include(\"category\")",
+							"    pm.expect(pm.response.text()).to.include(\"name\")",
+							"});",
+							"",
+							"pm.test(\"Probar que el tiempo de respuesta sea menor a 1 seg\", function (){",
+							"    pm.expect(pm.response.responseTime).to.be.below(1000);",
+							"});",
+							"",
+							"pm.test(\"Que es header Content-type no sea un application/jason\",() =>{",
+							"    pm.expect(pm.response.headers.get(\"Content-Type\")).to.eq(\"application/json\")    ",
+							"});",
+							"",
+							"//limpiar variable",
+							"pm.environment.unset(\"id\")",
+							"//como no responde con id se hara por texto - pm.environment.set(\"id\",responseJson.id)",
+							"console.log(pm.response.text())",
+							"console.log(pm.response.text().split(\":\")[1])",
+							"",
+							"let messageString = pm.response.text().split(\":\")[1];",
+							"console.log(messageString.split(\",\")[0])",
+							"pm.environment.set(\"id\",messageString.split(\",\")[0]);",
+							"",
+							"",
+							"",
+							"",
+							""
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"//Generar nombre random",
+							"var name = pm.variables.replaceIn(\"{{$randomFirstName}}\")",
+							"pm.environment.set(\"name\",name)"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disabledSystemHeaders": {
+					"accept": true,
+					"content-type": true
+				}
+			},
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Accept",
+						"value": "application/json",
+						"type": "text"
+					},
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"id\":\"{{id}}\",\n  \"category\": {\n    \"id\": 0,\n    \"name\": \"{{name}}\"\n  },\n  \"name\": \"{{name}}\",\n  \"photoUrls\": [\n    \"string\"\n  ],\n  \"tags\": [\n    {\n      \"id\": 0,\n      \"name\": \"manchado\"\n    }\n  ],\n  \"status\": \"{{status}}\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{url_base}}/v2/pet",
+					"host": [
+						"{{url_base}}"
+					],
+					"path": [
+						"v2",
+						"pet"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "get (GetPetWuthId 200",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"validar que el codigo de respuesta\", function(){",
+							"    pm.expect(pm.response.code).to.eql(200)",
+							"});",
+							"",
+							"pm.test(\"Status code created\", () => {",
+							"    pm.response.to.have.status(\"OK\")",
+							"});",
+							"",
+							"pm.test(\"Validar el texto que viene en el body\", () => {",
+							"    pm.expect(pm.response.text()).to.include(\"id\")",
+							"    pm.expect(pm.response.text()).to.include(\"name\")",
+							"});",
+							"",
+							"pm.test(\"Probar que el request es exitoso\", function (){",
+							"    pm.response.to.be.success;",
+							"})",
+							"",
+							"pm.test(\"Probar que el request no es un error\", function (){",
+							"    pm.response.to.not.be.error;",
+							"})",
+							"",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disabledSystemHeaders": {
+					"accept": true
+				}
+			},
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Accept",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "{{url_base}}/v2/pet/{{id}}",
+					"host": [
+						"{{url_base}}"
+					],
+					"path": [
+						"v2",
+						"pet",
+						"{{id}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "post /updateImage",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"validar que el codigo de respuesta\", function(){",
+							"    pm.expect(pm.response.code).to.eql(400)",
+							"});",
+							"",
+							"pm.test(\"Validar el texto que viene en el body\", () => {",
+							"    pm.expect(pm.response.text()).to.include(\"type\")",
+							"    pm.expect(pm.response.text()).to.include(\"message\")",
+							"});",
+							"",
+							"pm.test(\"Probar que el tiempo de respuesta sea menor a 1 seg\", function (){",
+							"    pm.expect(pm.response.responseTime).to.be.below(3000);",
+							"});",
+							"",
+							"pm.test(\"Validar que responda con un body\", function(){",
+							"    pm.response.to.be.withBody;",
+							"});",
+							"",
+							"pm.test(\"Validar uno de los headers que regresa\", function(){",
+							"pm.expect(pm.response.headers.get(\"Content-Type\"))   ",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disabledSystemHeaders": {
+					"accept": true
+				}
+			},
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Accept",
+						"value": "application/json",
+						"type": "text"
+					},
+					{
+						"key": "Content-Type",
+						"value": "multipart/form-data",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "formdata",
+					"formdata": [
+						{
+							"key": "file",
+							"type": "file",
+							"src": "/Users/dulce/Downloads/solovino.jpeg"
+						}
+					]
+				},
+				"url": {
+					"raw": "{{url_base}}/v2/pet/{{id}}/uploadImage",
+					"host": [
+						"{{url_base}}"
+					],
+					"path": [
+						"v2",
+						"pet",
+						"{{id}}",
+						"uploadImage"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "get /GetPet200",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"//prueba para validar el codigo de respuesta diferentes maneras hacen lo mismo",
+							"pm.test(\"validar que el codigo de respuesta es 201\", function(){",
+							"    pm.expect(pm.response.code).to.eql(200)",
+							"});",
+							"",
+							"pm.test(\"Validar el texto que viene en el body\", () => {",
+							"    pm.expect(pm.response.text()).to.include(\"id\")",
+							"});",
+							"",
+							"pm.test(\"Probar que el request no es un error\", function (){",
+							"    pm.response.to.not.be.error;",
+							"})",
+							"",
+							"pm.test(\"Validar el testo que viene en el body\", () => {",
+							"    pm.expect(pm.response.text()).to.include(\"category\")",
+							"    pm.expect(pm.response.text()).to.include(\"name\")",
+							"});",
+							"",
+							"pm.test(\"Probar que el tiempo de respuesta sea menor a 1 seg\", function (){",
+							"    pm.expect(pm.response.responseTime).to.be.below(3000);",
+							"});",
+							"",
+							"pm.test(\"Validar que responda con un body\", function(){",
+							"    pm.response.to.be.withBody;",
+							"});",
+							"",
+							"pm.test(\"Validar uno de los headers que regresa\", function(){",
+							"pm.expect(pm.response.headers.get(\"Content-Type\"))   ",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true,
+				"disabledSystemHeaders": {
+					"accept": true
+				}
+			},
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Accept",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"id\": 0,\n  \"category\": {\n    \"id\": 0,\n    \"name\": \"string\"\n  },\n  \"name\": \"doggie\",\n  \"photoUrls\": [\n    \"string\"\n  ],\n  \"tags\": [\n    {\n      \"id\": 0,\n      \"name\": \"manchado\"\n    }\n  ],\n  \"status\": \"available\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{url_base}}/v2/pet/{{id}}",
+					"host": [
+						"{{url_base}}"
+					],
+					"path": [
+						"v2",
+						"pet",
+						"{{id}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "post /UpdateName 200",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"//prueba para validar el codigo de respuesta diferentes maneras hacen lo mismo",
+							"",
+							"pm.test(\"validar que el nombre de la mascota sea igual a variable dinamica\", function(){",
+							"    var nombre = pm.environment.get(\"name\")",
+							"    pm.expect(pm.response.json().name).to.eql(nombre)",
+							"});",
+							"",
+							"pm.test(\"validar que el codigo de respuesta es 201\", function(){",
+							"    pm.expect(pm.response.code).to.eql(200)",
+							"});",
+							"",
+							"",
+							"pm.test(\"Probar que el request no es un error\", function (){",
+							"    pm.response.to.not.be.error;",
+							"})",
+							"",
+							"pm.test(\"Validar el texto que viene en el body\", () => {",
+							"    pm.expect(pm.response.text()).to.include(\"category\")",
+							"    pm.expect(pm.response.text()).to.include(\"tags\")",
+							"});",
+							"",
+							"pm.test(\"Probar que el tiempo de respuesta sea menor a 1 seg\", function (){",
+							"    pm.expect(pm.response.responseTime).to.be.below(3000);",
+							"});",
+							"",
+							"pm.test(\"Validar que responda con un body\", function(){",
+							"    pm.response.to.be.withBody;",
+							"});",
+							"",
+							"pm.test(\"Validar uno de los headers que regresa\", function(){",
+							"pm.expect(pm.response.headers.get(\"Content-Type\"))   ",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disabledSystemHeaders": {
+					"accept": true
+				}
+			},
+			"request": {
+				"method": "PUT",
+				"header": [
+					{
+						"key": "Accept",
+						"value": "application/json",
+						"type": "text"
+					},
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"id\":\"{{id}}\",\n  \"category\": {\n    \"id\": 0,\n    \"name\": \"string\"\n  },\n  \"name\": \"{{name}}\",\n  \"photoUrls\": [\n    \"string\"\n  ],\n  \"tags\": [\n    {\n      \"id\": 0,\n      \"name\": \"string\"\n    }\n  ],\n  \"status\": \"sold\"\n}"
+				},
+				"url": {
+					"raw": "{{url_base}}/v2/pet",
+					"host": [
+						"{{url_base}}"
+					],
+					"path": [
+						"v2",
+						"pet"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "get /GetPetAfterUpdate1 200",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"validar que el codigo de respuesta es 200\", function(){",
+							"    pm.expect(pm.response.code).to.eql(200)",
+							"});",
+							"",
+							"pm.test(\"Probar que el request no es un error\", function (){",
+							"    pm.response.to.not.be.error;",
+							"})",
+							"",
+							"pm.test(\"Validar el texto que viene en el body\", () => {",
+							"    pm.expect(pm.response.text()).to.include(\"category\")",
+							"    pm.expect(pm.response.text()).to.include(\"tags\")",
+							"    pm.expect(pm.response.text()).to.include(\"status\")",
+							"});",
+							"",
+							"pm.test(\"Probar que el tiempo de respuesta\", function (){",
+							"    pm.expect(pm.response.responseTime).to.be.below(3000);",
+							"});",
+							"",
+							"pm.test(\"Validar que responda con un body\", function(){",
+							"    pm.response.to.be.withBody;",
+							"});",
+							"",
+							"pm.test(\"Validar uno de los headers que regresa\", function(){",
+							"pm.expect(pm.response.headers.get(\"Content-Type\"))   ",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true,
+				"disabledSystemHeaders": {
+					"accept": true
+				}
+			},
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Accept",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"id\": 0,\n  \"category\": {\n    \"id\": 0,\n    \"name\": \"string\"\n  },\n  \"name\": \"doggie\",\n  \"photoUrls\": [\n    \"string\"\n  ],\n  \"tags\": [\n    {\n      \"id\": 0,\n      \"name\": \"manchado\"\n    }\n  ],\n  \"status\": \"available\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{url_base}}/v2/pet/{{id}}",
+					"host": [
+						"{{url_base}}"
+					],
+					"path": [
+						"v2",
+						"pet",
+						"{{id}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "post /UpdateFormUrlencode 200",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Probar que el estatus response es 200\", function(){",
+							"    pm.response.to.have.status(200)",
+							"})",
+							"",
+							"pm.test(\"Probar que el request no es un error\", function (){",
+							"    pm.response.to.not.be.error;",
+							"})",
+							"",
+							"pm.test(\"Validar el texto que viene en el body\", () => {",
+							"    pm.expect(pm.response.text()).to.include(\"code\")",
+							"    pm.expect(pm.response.text()).to.include(\"type\")",
+							"    pm.expect(pm.response.text()).to.include(\"message\")",
+							"});",
+							"",
+							"pm.test(\"Probar que el tiempo de respuesta sea menor a 1 seg\", function (){",
+							"    pm.expect(pm.response.responseTime).to.be.below(3000);",
+							"});",
+							"",
+							"pm.test(\"Validar uno de los headers que regresa\", function(){",
+							"pm.expect(pm.response.headers.get(\"Content-Type\"))   ",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disabledSystemHeaders": {
+					"accept": true
+				}
+			},
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/x-www-form-urlencoded",
+						"type": "text"
+					},
+					{
+						"key": "Accept",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "urlencoded",
+					"urlencoded": [
+						{
+							"key": "name",
+							"value": "Solovino",
+							"type": "text"
+						},
+						{
+							"key": "status",
+							"value": "pending",
+							"type": "text"
+						}
+					]
+				},
+				"url": {
+					"raw": "{{url_base}}/v2/pet/{{id}}",
+					"host": [
+						"{{url_base}}"
+					],
+					"path": [
+						"v2",
+						"pet",
+						"{{id}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "get /GetPet200 Copy 2",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"validar que el codigo de respuesta es 200\", function(){",
+							"    pm.expect(pm.response.code).to.eql(200)",
+							"});",
+							"",
+							"pm.test(\"Probar que el request no es un error\", function (){",
+							"    pm.response.to.not.be.error;",
+							"})",
+							"",
+							"pm.test(\"Validar el texto que viene en el body\", () => {",
+							"    pm.expect(pm.response.text()).to.include(\"category\")",
+							"    pm.expect(pm.response.text()).to.include(\"tags\")",
+							"    pm.expect(pm.response.text()).to.include(\"status\")",
+							"});",
+							"",
+							"pm.test(\"Probar que el tiempo de respuesta\", function (){",
+							"    pm.expect(pm.response.responseTime).to.be.below(3000);",
+							"});",
+							"",
+							"pm.test(\"Validar que responda con un body\", function(){",
+							"    pm.response.to.be.withBody;",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true,
+				"disabledSystemHeaders": {
+					"accept": true
+				}
+			},
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Accept",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"id\": 0,\n  \"category\": {\n    \"id\": 0,\n    \"name\": \"string\"\n  },\n  \"name\": \"doggie\",\n  \"photoUrls\": [\n    \"string\"\n  ],\n  \"tags\": [\n    {\n      \"id\": 0,\n      \"name\": \"manchado\"\n    }\n  ],\n  \"status\": \"available\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{url_base}}/v2/pet/{{id}}",
+					"host": [
+						"{{url_base}}"
+					],
+					"path": [
+						"v2",
+						"pet",
+						"{{id}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "get /FindPetByStatus 200",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"validar que el codigo de respuesta es 200\", function(){",
+							"    pm.expect(pm.response.code).to.eql(200)",
+							"});",
+							"",
+							"pm.test(\"Probar que el request no es un error\", function (){",
+							"    pm.response.to.not.be.error;",
+							"})",
+							"",
+							"pm.test(\"Validar el texto que viene en el body\", () => {",
+							"    pm.expect(pm.response.text()).to.include(\"category\")",
+							"    pm.expect(pm.response.text()).to.include(\"tags\")",
+							"    pm.expect(pm.response.text()).to.include(\"status\")",
+							"});",
+							"",
+							"pm.test(\"Probar que el tiempo de respuesta\", function (){",
+							"    pm.expect(pm.response.responseTime).to.be.below(3000);",
+							"});",
+							"",
+							"pm.test(\"Validar que responda con un body\", function(){",
+							"    pm.response.to.be.withBody;",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disabledSystemHeaders": {
+					"accept": true
+				}
+			},
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Accept",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "{{url_base}}/v2/pet/findByStatus?status=pending",
+					"host": [
+						"{{url_base}}"
+					],
+					"path": [
+						"v2",
+						"pet",
+						"findByStatus"
+					],
+					"query": [
+						{
+							"key": "status",
+							"value": "pending"
+						},
+						{
+							"key": "status",
+							"value": "sold",
+							"disabled": true
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "delete /deleteByid 200",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"validar que el codigo de respuesta\", function(){",
+							"    pm.expect(pm.response.code).to.eql(200)",
+							"});",
+							"",
+							"pm.test(\"Probar el tiempo de respuesta\", function (){",
+							"    pm.expect(pm.response.responseTime).to.be.below(3000);",
+							"});",
+							"",
+							"pm.test(\"Validar uno de los headers que regresa\", function(){",
+							"pm.expect(pm.response.headers.get(\"Content-Type\"))",
+							"pm.expect(pm.response.headers.get(\"Acept\")) ",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disabledSystemHeaders": {
+					"accept": true
+				}
+			},
+			"request": {
+				"method": "DELETE",
+				"header": [
+					{
+						"key": "Accept",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "{{url_base}}/v2/pet/{{id}}",
+					"host": [
+						"{{url_base}}"
+					],
+					"path": [
+						"v2",
+						"pet",
+						"{{id}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "get /GetPet200 Copy 3",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"validar que el codigo de respuesta es 404\", function(){",
+							"    pm.expect(pm.response.code).to.eql(404)",
+							"});",
+							"",
+							"",
+							"pm.test(\"Validar el texto que viene en el body\", () => {",
+							"    pm.expect(pm.response.text()).to.include(\"code\")",
+							"    pm.expect(pm.response.text()).to.include(\"type\")",
+							"});",
+							"",
+							"pm.test(\"Probar que el tiempo de respuesta\", function (){",
+							"    pm.expect(pm.response.responseTime).to.be.below(3000);",
+							"});",
+							"",
+							"pm.test(\"Validar que responda con un body\", function(){",
+							"    pm.response.to.be.withBody;",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true,
+				"disabledSystemHeaders": {
+					"accept": true
+				}
+			},
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Accept",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"id\": 0,\n  \"category\": {\n    \"id\": 0,\n    \"name\": \"string\"\n  },\n  \"name\": \"doggie\",\n  \"photoUrls\": [\n    \"string\"\n  ],\n  \"tags\": [\n    {\n      \"id\": 0,\n      \"name\": \"manchado\"\n    }\n  ],\n  \"status\": \"available\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{url_base}}/v2/pet/{{id}}",
+					"host": [
+						"{{url_base}}"
+					],
+					"path": [
+						"v2",
+						"pet",
+						"{{id}}"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}
