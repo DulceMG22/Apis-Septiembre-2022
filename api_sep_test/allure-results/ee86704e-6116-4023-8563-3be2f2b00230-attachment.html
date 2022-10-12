@@ -1,0 +1,65 @@
+<div>PATCH to https://webapi.segundamano.mx/nga/api/v1.1%2F%2Fprivate/accounts/11881665?lang=es</div>
+
+<h4>Body</h4>
+<div>
+    <pre class="preformated-text">
+    {
+    &quot;account&quot;: {
+        &quot;name&quot;: &quot;Mariela&quot;,
+        &quot;phone&quot;: &quot;1234321667&quot;,
+        &quot;locations&quot;: [
+            {
+                &quot;code&quot;: &quot;5&quot;,
+                &quot;key&quot;: &quot;region&quot;,
+                &quot;label&quot;: &quot;Baja California Sur&quot;,
+                &quot;locations&quot;: [
+                    {
+                        &quot;code&quot;: &quot;51&quot;,
+                        &quot;key&quot;: &quot;municipality&quot;,
+                        &quot;label&quot;: &quot;comondú&quot;
+                    }
+                ]
+            }
+        ],
+        &quot;professional&quot;: false,
+        &quot;phone_hidden&quot;: false
+    }
+}
+    </pre>
+</div>
+
+<h4>Headers</h4>
+<div>
+        <div>Origin: https://www.segundamano.mx</div>
+        <div>Authorization: tag:scmcoord.com,2013:api mc1x0dcc5a26bce3586c0ec50e21d2eb6f83d2e19e3a_v2</div>
+        <div>Accept: application/json, text/plain, */*</div>
+        <div>Content-Type: application/json</div>
+</div>
+
+
+
+<h4>Curl</h4>
+<div>
+curl -v -X PATCH &#39;https://webapi.segundamano.mx/nga/api/v1.1%2F%2Fprivate/accounts/11881665?lang=es&#39; -H &#39;Origin: https://www.segundamano.mx&#39; -H &#39;Authorization: tag:scmcoord.com,2013:api mc1x0dcc5a26bce3586c0ec50e21d2eb6f83d2e19e3a_v2&#39; -H &#39;Accept: application/json, text/plain, */*&#39; -H &#39;Content-Type: application/json&#39; -d &#39;{
+    &quot;account&quot;: {
+        &quot;name&quot;: &quot;Mariela&quot;,
+        &quot;phone&quot;: &quot;1234321667&quot;,
+        &quot;locations&quot;: [
+            {
+                &quot;code&quot;: &quot;5&quot;,
+                &quot;key&quot;: &quot;region&quot;,
+                &quot;label&quot;: &quot;Baja California Sur&quot;,
+                &quot;locations&quot;: [
+                    {
+                        &quot;code&quot;: &quot;51&quot;,
+                        &quot;key&quot;: &quot;municipality&quot;,
+                        &quot;label&quot;: &quot;comondú&quot;
+                    }
+                ]
+            }
+        ],
+        &quot;professional&quot;: false,
+        &quot;phone_hidden&quot;: false
+    }
+}&#39;
+</div>

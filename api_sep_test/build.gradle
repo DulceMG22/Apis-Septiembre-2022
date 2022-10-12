@@ -1,0 +1,42 @@
+plugins {
+    id 'java'
+}
+
+group 'org.example'
+version '1.0-SNAPSHOT'
+
+
+repositories {
+    mavenCentral()
+    maven {
+        url "https://repo.spring.io/release"
+    }
+    maven {
+        url "https://repository.jboss.org/maven2"
+    }
+}
+
+dependencies {
+
+    testImplementation 'org.junit.jupiter:junit-jupiter-api:5.9.0'
+    testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.9.0'
+
+    testImplementation 'io.rest-assured:rest-assured:5.2.0'
+    testImplementation 'io.rest-assured:json-path:5.2.0'
+
+
+    testImplementation 'io.qameta.allure:allure-java-commons:2.13.9'
+    testImplementation 'io.qameta.allure:allure-junit5:2.13.1'
+    implementation 'io.qameta.allure:allure-rest-assured:2.13.9'
+
+    testImplementation("org.slf4j:slf4j-simple:1.7.36")
+}
+
+test {
+    useJUnitPlatform()
+}
+
+//ejecuciones en paralelo
+tasks.withType(Test) {
+    maxParallelForks = 3
+}
